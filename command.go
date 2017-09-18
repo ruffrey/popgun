@@ -40,7 +40,7 @@ func (cmd UserCommand) Run(c *Client, args []string) (int, error) {
 		return 0, ErrInvalidState
 	}
 	if len(args) != 1 {
-		return 0, fmt.Errorf("Invalid arguments count: %d", len(args))
+		return 0, fmt.Errorf("Invalid arguments count: %d %+v", len(args), args)
 	}
 	c.user = args[0]
 	c.printer.Ok("")
@@ -57,8 +57,8 @@ func (cmd PassCommand) Run(c *Client, args []string) (int, error) {
 		c.printer.Err("PASS can be executed only directly after USER command")
 		return STATE_AUTHORIZATION, nil
 	}
-	if len(args) != 1 {
-		return 0, fmt.Errorf("Invalid arguments count: %d", len(args))
+	if len(args) < 1 {
+		return 0, fmt.Errorf("Invalid arguments count: %d %+v", len(args), args)
 	}
 	c.pass = args[0]
 	if !c.authorizator.Authorize(c.user, c.pass) {
