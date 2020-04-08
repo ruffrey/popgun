@@ -24,6 +24,7 @@ func (cmd QuitCommand) Run(c *Client, args []string) (int, error) {
 			c.printer.Err("Server was unable to unlock maildrop")
 			return 0, fmt.Errorf("Error unlocking maildrop for user %s: %v", c.user, err)
 		}
+		c.backend.OnClose(c.user)
 		newState = STATE_UPDATE
 	}
 
