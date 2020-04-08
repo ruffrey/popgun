@@ -7,8 +7,8 @@ type DummyAuthorizator struct {
 }
 
 // Authorize user for given username and password.
-func (a DummyAuthorizator) Authorize(user, pass string) bool {
-	return true
+func (a DummyAuthorizator) Authorize(user, pass string) error {
+	return nil
 }
 
 // DummyBackend is a fake backend interface implementation used for test
@@ -83,4 +83,7 @@ func (b DummyBackend) Lock(user string) error {
 // Release lock on storage, Unlock() is called after client is disconnected.
 func (b DummyBackend) Unlock(user string) error {
 	return nil
+}
+
+func (b DummyBackend) OnClose(user string)  {
 }

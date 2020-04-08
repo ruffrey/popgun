@@ -24,7 +24,7 @@ type Config struct {
 }
 
 type Authorizator interface {
-	Authorize(user, pass string) bool
+	Authorize(user, pass string) error
 }
 
 type Backend interface {
@@ -39,6 +39,7 @@ type Backend interface {
 	Update(user string) error
 	Lock(user string) error
 	Unlock(user string) error
+	OnClose(user string)
 }
 
 var (
@@ -97,6 +98,7 @@ func (c Client) handle(conn net.Conn) {
 		if err != nil {
 			if err == io.EOF {
 				log.Print("Connection closed by client")
+				c.backend.OnClose(c.user)
 			} else {
 				log.Print("Error reading input: ", err)
 			}

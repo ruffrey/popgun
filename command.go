@@ -61,12 +61,13 @@ func (cmd PassCommand) Run(c *Client, args []string) (int, error) {
 		return 0, fmt.Errorf("Invalid arguments count: %d %+v", len(args), args)
 	}
 	c.pass = args[0]
-	if !c.authorizator.Authorize(c.user, c.pass) {
-		c.printer.Err("Invalid username or password")
-		return STATE_AUTHORIZATION, nil
+	err := c.authorizator.Authorize(c.user, c.pass)
+	if err != nil {
+		c.printer.Err("user/pass error, %s", err.Error())
+		return STATE_AUTHORIZATION, err
 	}
 
-	err := c.backend.Lock(c.user)
+	err = c.backend.Lock(c.user)
 	if err != nil {
 		c.printer.Err("Server was unable to lock maildrop")
 		return 0, fmt.Errorf("Error locking maildrop for user %s: %v", c.user, err)
